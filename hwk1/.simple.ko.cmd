@@ -1,0 +1,1 @@
+cmd_/media/psf/Home/Programming/School/CS470/hwk1/simple.ko := ld -r -m elf_x86_64 -z max-page-size=0x200000 -T ./scripts/module-common.lds --build-id  -o /media/psf/Home/Programming/School/CS470/hwk1/simple.ko /media/psf/Home/Programming/School/CS470/hwk1/simple.o /media/psf/Home/Programming/School/CS470/hwk1/simple.mod.o ;  true
