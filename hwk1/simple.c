@@ -53,6 +53,8 @@ int simple_init(void)
   person5->year = 1989;
   list_add_tail(&person5->list, &birthday_list);
 
+
+  printk("===============================================\n");
   
   struct birthday *ptr;
 	
@@ -71,13 +73,15 @@ int simple_init(void)
 void simple_exit(void) {
 
   struct birthday *ptr, *next;
-
+  int count = 0;
   // Iterating through the birthday list, print and delete them out
   list_for_each_entry_safe(ptr, next, &birthday_list, list){
     printk("Deleting birthday: %d/%d/%d\n", ptr->month, ptr->day, ptr->year);
     list_del(&ptr->list);
     kfree(ptr);
+    count++;
   }
+  printlk("Removed: %d", count);
 
 }
 
