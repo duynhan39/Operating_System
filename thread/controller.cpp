@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 
   if(argc!=4)
   {
-    cout << "Usage: " <<argv[0]<<"<Wait time (in seconds)><Number of Producer Threads><Number of Consumer Threads>" <<endl;
+    cout << "Usage: " <<argv[0]<<"<Wait time (in seconds)> <Number of Producer Threads> <Number of Consumer Threads>" <<endl;
     exit(1);
   }
   int sleepTime = atoi(argv[1]);
@@ -71,6 +71,7 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
+/* Insert a new item into the buffer */
 int insert_item(buffer_item item) {
   int f;
   sem_getvalue(&full, &f);
@@ -80,6 +81,7 @@ int insert_item(buffer_item item) {
   return 0;
 }
 
+/* Remove the top item out of buffer */
 int remove_item(buffer_item &item) {
   int f;
   sem_getvalue(&full, &f);
@@ -90,14 +92,16 @@ int remove_item(buffer_item &item) {
   return 0;
 }
 
+/* The producer thread */
 void *producer(void *param) {
   int *num = (int*) param;
   int n = *num;
 
   buffer_item item;
   while (true) {
-    
     srand (time(NULL));
+
+    /* sleep for a random period of time */
     sleep(rand()%5);
     int k;
     sem_getvalue(&empty, &k);
@@ -124,6 +128,7 @@ void *producer(void *param) {
   pthread_exit(0); 
 }
 
+/* Consumer thread */
 void *consumer(void *param) {
   int *num = (int*) param;
   int n = *num; 
@@ -150,3 +155,5 @@ void *consumer(void *param) {
   }
   pthread_exit(0);
 }
+
+
