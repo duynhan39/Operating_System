@@ -1,3 +1,6 @@
+// Nhan Cao
+// CS 470 Thread Project
+
 #include "buffer.h"
 
 #include <iostream>
