@@ -38,6 +38,8 @@ int main(int argc, char *argv[]) {
   numOfProducers = atoi(argv[2]);
   numOfConsumers = atoi(argv[3]);
 
+//  cout<<"CONS :"<<numOfConsumers<<endl;
+//  cout<<"Prod :"<<numOfProducers<<endl;
 
 /* 2. Initialize */
   sem_init(&empty, 0, BUFFER_SIZE);
@@ -52,8 +54,9 @@ int main(int argc, char *argv[]) {
 
   pthread_attr_init(&pAttr);
 
-  for(int i=0; i<numOfProducers; i++)
+  for(int i=0; i<numOfProducers; i++) {
     pthread_create(&prodId, &pAttr, producer, &i);
+  }
 
 /* 4. Create consumer thread(s) */
   pthread_t consId;
@@ -90,6 +93,8 @@ int remove_item(buffer_item &item) {
   return 0;
 }
 
+
+
 void *producer(void *param) {
   int *num = (int*) param;
   int n = *num;
@@ -97,10 +102,16 @@ void *producer(void *param) {
   buffer_item item;
   while (true) {
     
+    //cout<<"prod num 1 :"<<*num<<endl;
+    //cout<<"prod num 2 :"<<n<<endl;
+    
+
     srand (time(NULL));
+    //usleep((rand() % 10) * 400000);
     sleep(rand()%5);
     int k;
     sem_getvalue(&empty, &k);
+    //cout<<"EMPTY: "<<k<<endl;
 
     sem_wait(&empty);
     cout<<"Producer - wait on empty"<<endl;
@@ -124,19 +135,29 @@ void *producer(void *param) {
   pthread_exit(0); 
 }
 
+
 void *consumer(void *param) {
   int *num = (int*) param;
   int n = *num; 
   buffer_item item;
   while (true) {
+    
+//    cout<<"cons ITER :"<<iter<<endl;
+    //iter--;
+
     /* sleep for a random period of time */
     srand (time(NULL));
+    //usleep((rand() % 10) * 400000);
     sleep(rand()%5);
 
     sem_wait(&full);
     cout<<"Consumer - wait on full"<<endl;
     pthread_mutex_lock(&mutex); 
     cout<<"Consumer - wait on mutex lock"<<endl;
+
+    //int k;
+    //sem_getvalue(&empty, &k);
+    //cout<<"EMPTY: "<<k<<endl;
 
     if (remove_item(item)) {
       cout<<"consumer "<<n<<" report error condition"<<endl;
@@ -146,6 +167,11 @@ void *consumer(void *param) {
       sem_post(&empty);
       cout<<"\e[1mConsumer\e[0m "<<n<<" consumed "<<item<<endl;
     }
+
+    
+    //sem_getvalue(&empty, &k);
+    //cout<<"EMPTY: "<<k<<endl;
+
     pthread_mutex_unlock(&mutex);
   }
   pthread_exit(0);
